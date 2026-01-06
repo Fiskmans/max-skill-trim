@@ -147,6 +147,12 @@ public class MaxSkillTrimPlugin extends Plugin
         }
     }
 
+    @Subscribe
+    public void onStatChanged(StatChanged event)
+    {
+        updateTrim(event.getSkill());
+    }
+
     private void buildTrimWidgetContainers() {
         Widget skillsContainer = client.getWidget(InterfaceID.Stats.UNIVERSE);
         if (skillsContainer == null) return;
