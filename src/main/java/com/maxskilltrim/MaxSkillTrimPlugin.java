@@ -162,26 +162,8 @@ public class MaxSkillTrimPlugin extends Plugin
         }
     }
 
-    private static void removeWidget(Widget widget)
-    {
-        Widget parent = widget.getParent();
-        if (parent == null)
-            return;
-
-        Widget[] siblings = parent.getChildren();
-        if(siblings == null)
-            return;
-
-        for (int i = 0; i < siblings.length; i++) {
-            if (widget == siblings[i]) {
-                siblings[i] = null;
-                break;
-            }
-        }
-    }
-
     private void removeTrimWidgetContainers() {
-        trimWidgets.values().forEach(MaxSkillTrimPlugin::removeWidget);
+        trimWidgets.values().forEach(Utils::detachWidget);
         trimWidgets.clear();
     }
 
