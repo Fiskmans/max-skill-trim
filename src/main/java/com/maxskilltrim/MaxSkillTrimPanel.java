@@ -33,7 +33,7 @@ public class MaxSkillTrimPanel extends PluginPanel
     JPanel conditionsPanel = new JPanel();
 
     boolean overridesEnabled = false;
-    Hashtable<Skill, File> overrides = new Hashtable<>();
+    Hashtable<Skill, String> overrides = new Hashtable<>();
 
     @Inject
     public MaxSkillTrimPanel(MaxSkillTrimConfig config, MaxSkillTrimPlugin plugin, @Named("developerMode") boolean developerMode)
@@ -46,9 +46,6 @@ public class MaxSkillTrimPanel extends PluginPanel
         constraints.anchor = GridBagConstraints.LINE_START;
         constraints.insets = new Insets(3, 3, 3, 3);
         container.setLayout(layout);
-
-        JComboBox<String> maxLevelComboBox = buildComboBoxPanel(MaxSkillTrimConfig.SELECTED_MAX_LEVEL_TRIM, config.getSelectedMaxLevelTrimFilename());
-        JComboBox<String> maxExperienceComboBox = buildComboBoxPanel(MaxSkillTrimConfig.SELECTED_MAX_EXPERIENCE_TRIM, config.getSelectedMaxExperienceTrimFilename());
 
         JButton openFolderButton = new JButton("Open Folder");
         openFolderButton.addActionListener(e ->
@@ -133,7 +130,7 @@ public class MaxSkillTrimPanel extends PluginPanel
             skillConstraints.gridx = 1;
             overrideSelector.addActionListener(e ->
             {
-                overrides.put(skill.getSkill(), overrideSelector.getSelectedItem() == null ? null : new File(MaxSkillTrimPlugin.MAXSKILLTRIMS_DIR + "/" + overrideSelector.getSelectedItem()));
+                overrides.put(skill.getSkill(), (String)overrideSelector.getSelectedItem());
                 plugin.updateTrim(skill.getSkill());
             });
 
@@ -160,40 +157,7 @@ public class MaxSkillTrimPanel extends PluginPanel
         container.add(devPanel, devConstraints);
     }
 
-    private JComboBox<String> buildComboBoxPanel(String selectedTrimConfigKey, String selectedFilename) {
-        JComboBox<String> comboBox = new JComboBox<>();
-
-        // Forces long item names to not cause the JPanel to overflow.
-        comboBox.setPrototypeDisplayValue("");
-
-        refreshComboBoxOptions(comboBox);
-
-        comboBox.addItemListener((e) -> {
-            if (e.getStateChange() == ItemEvent.SELECTED && configManager != null)
-            {
-                configManager.setConfiguration(MaxSkillTrimConfig.GROUP_NAME, selectedTrimConfigKey, e.getItem());
-            }
-        });
-
-        comboBox.setSelectedItem(selectedFilename);
-
-        return comboBox;
-    }
-
-    private void refreshComboBoxOptions(JComboBox<String> comboBox)
-    {
-        Object selectedItem = comboBox.getSelectedItem();
-        comboBox.removeAllItems();
-
-        for (File f : Objects.requireNonNull(MaxSkillTrimPlugin.MAXSKILLTRIMS_DIR.listFiles()))
-        {
-            comboBox.addItem(f.getName());
-        }
-
-        comboBox.setSelectedItem(selectedItem);
-    }
-
-    public File selectTrim(Client client, Skill skill)
+    public String selectTrim(Client client, Skill skill)
     {
         if (overridesEnabled)
             return overrides.getOrDefault(skill, null);
@@ -203,7 +167,7 @@ public class MaxSkillTrimPanel extends PluginPanel
                 .map(c -> (TrimWithCondition)c)
                 .filter(c -> c.enabled)
                 .filter(c -> c.IsActive(client, skill))
-                .map(c -> c.file)
+                .map(c -> c.name)
                 .findFirst()
                 .orElse(null);
     }
@@ -232,17 +196,17 @@ public class MaxSkillTrimPanel extends PluginPanel
     {
         conditionsPanel.removeAll();
 
-        Set<File> oldFiles = Arrays.stream(trimConditionConfig
+        Set<String> oldFiles = Arrays.stream(trimConditionConfig
                         .split(";"))
                         .map(s -> new TrimWithCondition(this::changed, s))
                         .map((saved) -> {
                             conditionsPanel.add(saved);
-                            return saved.file;
+                            return saved.name;
                         }).collect(Collectors.toSet());
 
         for (File newFile : Objects.requireNonNull(MaxSkillTrimPlugin.MAXSKILLTRIMS_DIR.listFiles()))
         {
-            if (oldFiles.contains(newFile))
+            if (oldFiles.contains(newFile.getName()))
                 continue;
 
             conditionsPanel.add(new TrimWithCondition(this::changed, newFile));

@@ -205,12 +205,12 @@ public class MaxSkillTrimPlugin extends Plugin
 
     private Trim SelectTrim(Skill skill)
     {
-        File trimFile = maxSkillTrimPanel.selectTrim(client, skill);
+        String trimFile = maxSkillTrimPanel.selectTrim(client, skill);
 
         if (trimFile == null)
             return null;
 
-        return trimForImage(trimFile.getPath());
+        return trimForImage(trimFile);
     }
 
     private Widget createWidget(Widget parent, Skill skill) {
@@ -307,7 +307,6 @@ public class MaxSkillTrimPlugin extends Plugin
         //Recover a now unused trim
         Set<String> inUse = Arrays.stream(Skill.values())
                 .map(s -> maxSkillTrimPanel.selectTrim(client, s))
-                .map(File::getPath)
                 .collect(Collectors.toSet());
 
         for (Trim t : dynamicTrims)
@@ -330,6 +329,8 @@ public class MaxSkillTrimPlugin extends Plugin
         {
             return;
         }
+
+        log.info("Assigning trim " + filename + " to " + trim.spriteID);
 
         client.getSpriteOverrides().remove(trim.spriteID);
         client.getWidgetSpriteCache().reset();

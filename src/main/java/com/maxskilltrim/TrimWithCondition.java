@@ -23,7 +23,6 @@ public class TrimWithCondition extends JPanel
 {
     Runnable onChange;
     String name;
-    File file;
     boolean enabled;
     UserCondition condition;
 
@@ -31,7 +30,6 @@ public class TrimWithCondition extends JPanel
     {
         this.onChange = onChange;
         this.name = file.getName();
-        this.file = file;
         this.condition = new UserCondition(UserCondition.DefaultCondition);
         this.enabled = false;
         Setup();
@@ -45,7 +43,6 @@ public class TrimWithCondition extends JPanel
         if (parts.length >= 2)
         {
             this.name = parts[0];
-            this.file = new File(MaxSkillTrimPlugin.MAXSKILLTRIMS_DIR + "/" + parts[0]);
             this.condition = new UserCondition(parts[1]);
             this.enabled = parts.length < 3;
         }
@@ -80,7 +77,7 @@ public class TrimWithCondition extends JPanel
 
         add(header, BorderLayout.NORTH);
 
-        JLabel icon = new JLabel(new ImageIcon(file.getPath()));
+        JLabel icon = new JLabel(new ImageIcon(MaxSkillTrimPlugin.MAXSKILLTRIMS_DIR + "/" + name));
         icon.setBorder(new EmptyBorder(2, 1, 2, 1));
         add(icon, BorderLayout.CENTER);
 
