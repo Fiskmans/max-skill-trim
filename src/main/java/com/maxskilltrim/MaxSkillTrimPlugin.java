@@ -49,6 +49,7 @@ public class MaxSkillTrimPlugin extends Plugin
     @Inject
     private ClientToolbar pluginToolbar;
     public static final File MAXSKILLTRIMS_DIR = new File(RuneLite.RUNELITE_DIR.getPath(), "max-skill-trims");
+    private static final BufferedImage ICON_NAVBAR = ImageUtil.loadImageResource(MaxSkillTrimPlugin.class, "/icon_navbar.png");
     private static final int SCRIPTID_STATS_INIT = 393;
     private static final int SCRIPTID_STATS_REFRESH = 394;
     @Inject
@@ -87,16 +88,10 @@ public class MaxSkillTrimPlugin extends Plugin
 
         maxSkillTrimPanel = injector.getInstance(MaxSkillTrimPanel.class);
 
-        BufferedImage icon;
-        synchronized (ImageIO.class)
-        {
-            icon = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/icon.png")));
-        }
-
         navButton = NavigationButton.builder()
                 .tooltip("Max Skill Trim")
                 .priority(5)
-                .icon(icon)
+                .icon(ICON_NAVBAR)
                 .panel(maxSkillTrimPanel)
                 .build();
 

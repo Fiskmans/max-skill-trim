@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
@@ -93,6 +94,51 @@ public class TrimWithCondition extends JPanel
 
         conditionPanel.setAlignmentX(LEFT_ALIGNMENT);
         add(conditionPanel, BorderLayout.SOUTH);
+
+        final JPanel self = this;
+
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem delete = new JMenuItem();
+
+        delete.setText("Delete");
+        delete.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Container parent = self.getParent();
+                parent.remove(self);
+                onChange.run();
+                parent.revalidate();
+                parent.repaint();
+            }
+        });
+
+        menu.add(delete);
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                menu.show(self, e.getX(), e.getY());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
     }
 
     private JComboBox<String> buildLeftSelector() {

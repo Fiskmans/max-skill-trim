@@ -24,8 +24,8 @@ public class UserCondition extends JPanel
     {
         String[] parts = rawString.split(" ");
 
-        if (parts.length < 3)
-            throw  new RuntimeException("blah");
+        if (parts.length != 3)
+            throw new IllegalArgumentException("[" + rawString + "] should be three parts was " + parts.length);
 
         left = parts[0];
         operator = parts[1];
@@ -39,8 +39,16 @@ public class UserCondition extends JPanel
 
     public boolean Eval(Client client, Skill skill)
     {
-        int l = EvalSide(client, skill, left);
-        int r = EvalSide(client, skill, right);
+        int l;
+        int r;
+
+        try
+        {
+            l = EvalSide(client, skill, left);
+            r = EvalSide(client, skill, right);
+        } catch (Exception e) {
+            return false;
+        }
 
         switch(operator)
         {

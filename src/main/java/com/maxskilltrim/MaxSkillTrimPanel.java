@@ -211,5 +211,8 @@ public class MaxSkillTrimPanel extends PluginPanel
 
             conditionsPanel.add(new TrimWithCondition(this::changed, newFile));
         }
+
+        conditionsPanel.revalidate();
+        conditionsPanel.repaint();
     }
 }
